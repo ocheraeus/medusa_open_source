@@ -6,7 +6,7 @@ import { readdir } from "fs/promises"
 import { parseCorsOrigins } from "medusa-core-utils"
 import { extname, join, sep } from "path"
 import { MedusaRequest, MedusaResponse } from "../../../types/routing"
-import { errorHandler } from "../../../utils/middlewares"
+import { authenticate, errorHandler } from "../../../utils/middlewares"
 import logger from "../../logger"
 import {
   AsyncRouteHandler,
@@ -301,7 +301,6 @@ export class RoutesLoader {
             routes: [],
             shouldRequireAdminAuth: false,
             shouldRequireCustomerAuth: false,
-            shouldAppendCustomer: false,
             shouldAppendAuthCors: false,
           }
 
@@ -332,19 +331,17 @@ export class RoutesLoader {
           }
 
           if (route.startsWith("/store")) {
-            config.shouldAppendCustomer = true
-
             if (shouldAddCors) {
               config.shouldAppendStoreCors = true
+            }
+
+            if (shouldRequireAuth && route.startsWith("/store/customers/me")) {
+              config.shouldRequireCustomerAuth = true
             }
           }
 
           if (route.startsWith("/auth") && shouldAddCors) {
             config.shouldAppendAuthCors = true
-          }
-
-          if (shouldRequireAuth && route.startsWith("/store/me")) {
-            config.shouldRequireCustomerAuth = shouldRequireAuth
           }
 
           const handlers = Object.keys(import_).filter((key) => {
@@ -639,6 +636,21 @@ export class RoutesLoader {
           })
         )
       }
+
+      this.router.use(
+        descriptor.route,
+        authenticate("store", ["bearer", "session"], {
+          allowUnauthenticated: !descriptor.config.shouldRequireCustomerAuth,
+        })
+      )
+
+      // We probably don't want to allow access to all endpoints using an api key, but it will do until we revamp our routing.
+      this.router.use(
+        descriptor.route,
+        authenticate("admin", ["bearer", "session", "api-key"], {
+          allowUnauthenticated: !descriptor.config.shouldRequireAdminAuth,
+        })
+      )
 
       for (const route of routes) {
         /**

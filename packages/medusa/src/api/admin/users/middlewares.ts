@@ -40,7 +40,6 @@ export const adminUserRoutesMiddlewares: MiddlewareRoute[] = [
     method: ["GET"],
     matcher: "/admin/users/:id",
     middlewares: [
-      authenticate("admin", ["bearer", "session"]),
       validateAndTransformQuery(
         AdminGetUserParams,
         QueryConfig.retrieveTransformQueryConfig
@@ -51,7 +50,6 @@ export const adminUserRoutesMiddlewares: MiddlewareRoute[] = [
     method: ["GET"],
     matcher: "/admin/users/me",
     middlewares: [
-      authenticate("admin", ["bearer", "session"]),
       validateAndTransformQuery(
         AdminGetUserParams,
         QueryConfig.retrieveTransformQueryConfig
@@ -62,7 +60,6 @@ export const adminUserRoutesMiddlewares: MiddlewareRoute[] = [
     method: ["POST"],
     matcher: "/admin/users/:id",
     middlewares: [
-      authenticate("admin", ["bearer", "session"]),
       validateAndTransformBody(AdminUpdateUser),
       validateAndTransformQuery(
         AdminGetUserParams,
@@ -73,6 +70,6 @@ export const adminUserRoutesMiddlewares: MiddlewareRoute[] = [
   {
     method: ["DELETE"],
     matcher: "/admin/users/:id",
-    middlewares: [authenticate("admin", ["bearer", "session"])],
+    middlewares: [],
   },
 ]

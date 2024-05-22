@@ -18,7 +18,6 @@ export const adminInviteRoutesMiddlewares: MiddlewareRoute[] = [
     method: ["GET"],
     matcher: "/admin/invites",
     middlewares: [
-      authenticate("admin", ["session", "bearer", "api-key"]),
       validateAndTransformQuery(
         AdminGetInvitesParams,
         QueryConfig.listTransformQueryConfig
@@ -29,7 +28,6 @@ export const adminInviteRoutesMiddlewares: MiddlewareRoute[] = [
     method: ["POST"],
     matcher: "/admin/invites",
     middlewares: [
-      authenticate("admin", ["session", "bearer", "api-key"]),
       validateAndTransformBody(AdminCreateInvite),
       validateAndTransformQuery(
         AdminGetInviteParams,
@@ -55,7 +53,6 @@ export const adminInviteRoutesMiddlewares: MiddlewareRoute[] = [
     method: ["GET"],
     matcher: "/admin/invites/:id",
     middlewares: [
-      authenticate("admin", ["session", "bearer", "api-key"]),
       validateAndTransformQuery(
         AdminGetInviteParams,
         QueryConfig.retrieveTransformQueryConfig
@@ -65,13 +62,12 @@ export const adminInviteRoutesMiddlewares: MiddlewareRoute[] = [
   {
     method: ["DELETE"],
     matcher: "/admin/invites/:id",
-    middlewares: [authenticate("admin", ["session", "bearer", "api-key"])],
+    middlewares: [],
   },
   {
     method: "POST",
     matcher: "/admin/invites/:id/resend",
     middlewares: [
-      authenticate("admin", ["session", "bearer", "api-key"]),
       validateAndTransformQuery(
         AdminGetInviteParams,
         QueryConfig.retrieveTransformQueryConfig

@@ -124,8 +124,9 @@ export const createServer = async (rootDir) => {
       if (opts.adminSession) {
         const token = jwt.sign(
           {
-            user_id: opts.adminSession.userId || opts.adminSession.jwt?.userId,
-            domain: "admin",
+            actor_id: opts.adminSession.userId || opts.adminSession.jwt?.userId,
+            actor_type: "user",
+            scope: "admin",
           },
           config.projectConfig.http.jwtSecret!
         )
@@ -135,10 +136,11 @@ export const createServer = async (rootDir) => {
       if (opts.clientSession) {
         const token = jwt.sign(
           {
-            customer_id:
+            actor_id:
               opts.clientSession.customer_id ||
               opts.clientSession.jwt?.customer_id,
-            domain: "store",
+            actor_type: "customer",
+            scope: "store",
           },
           config.projectConfig.http.jwtSecret!
         )

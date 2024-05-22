@@ -29,11 +29,6 @@ export const storeCustomerRoutesMiddlewares: MiddlewareRoute[] = [
     ],
   },
   {
-    method: "ALL",
-    matcher: "/store/customers/me*",
-    middlewares: [authenticate("store", ["session", "bearer"])],
-  },
-  {
     method: ["GET"],
     matcher: "/store/customers/me",
     middlewares: [
